@@ -178,6 +178,26 @@
 
 ---
 
+### � 访问统计
+
+本项目已集成 **Google Analytics 4 (GA4)**，用于统计生产环境的访问量和功能使用情况。
+
+✅ **完全免费** - 无需部署额外服务器  
+✅ **隐私优先** - IP 匿名化，符合 GDPR  
+✅ **用户可控** - Cookie 同意横幅，可选择接受或拒绝  
+
+**快速配置：**
+
+1. 创建 GA4 账号并获取 Measurement ID
+2. 配置环境变量：
+   ```bash
+   cp .env.example .env.local
+   # 编辑 .env.local，替换 VITE_GA_MEASUREMENT_ID
+   ```
+3. 详细文档：[GA4 集成指南](./docs/GA4_INTEGRATION.md)
+
+---
+
 ### 🛠️ 技术栈
 
 - **前端框架**: React 18 + TypeScript
@@ -187,6 +207,7 @@
 - **画布引擎**: @xyflow/react (React Flow)
 - **布局算法**: Dagre
 - **状态管理**: React Context
+- **访问统计**: Google Analytics 4 (react-ga4)
 
 ---
 

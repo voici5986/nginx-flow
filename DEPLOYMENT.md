@@ -418,13 +418,21 @@ vercel --prod
 **1. 通过 Dashboard 部署**
 
 1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com)
+
 2. 进入 "Workers & Pages"
+
 3. 点击 "Create application" → "Pages"
+
 4. 连接 Git 仓库
+
 5. 配置：
-   - Framework preset: `Vite`
-   - Build command: `npm run build`
+   - Framework preset: `none`
+   - Build command: `bun install && npm run build`
    - Build output directory: `dist`
+   
+   变量
+   
+   SKIP_DEPENDENCY_INSTALL ： true
 
 **2. 配置 `_redirects` 文件（放在 `public/` 目录）**
 

@@ -23,6 +23,7 @@ import {
   TemplateCategory,
   TemplateDefinition,
 } from '@/data/templates';
+import { analytics } from '@/utils/analytics';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -180,6 +181,12 @@ const TemplateLibrary: React.FC = () => {
     // Deep clone the config to avoid reference issues
     const configCopy = JSON.parse(JSON.stringify(pendingTemplate.config));
     importConfig(configCopy);
+    
+    // 追踪模板使用
+    analytics.trackTemplateUse(
+      language === 'zh' ? pendingTemplate.nameZh : pendingTemplate.name,
+      pendingTemplate.category
+    );
     
     toast({
       title: language === 'zh' ? '✓ 模板已应用' : '✓ Template Applied',

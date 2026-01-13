@@ -25,6 +25,7 @@ import {
   AuditSeverity,
   AuditCategory,
 } from '@/services/auditService';
+import { analytics } from '@/utils/analytics';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -53,7 +54,14 @@ const AuditPanel: React.FC<AuditPanelProps> = ({ onHighlightNode }) => {
   const [isFixingAll, setIsFixingAll] = useState(false);
 
   // Run audit
-  const auditResult = useMemo(() => runAudit(config), [config]);
+  const auditResult = useMemo(() => {
+    const result = runAudit(config);
+    // 追踪配置体检运行
+    if (result.issues.length > 0 || result.score < 100) {
+      analytics.trackAuditRun(result.score, result.issues.length, result.grade);
+    }
+    return result;
+  }, [config]);
 
   // Reset fixed issues when config changes significantly
   useEffect(() => {
@@ -137,7 +145,12 @@ const AuditPanel: React.FC<AuditPanelProps> = ({ onHighlightNode }) => {
     const fixedConfig = applyAllFixes(config);
     importConfig({ ...fixedConfig, rawConfig: undefined });
     
-    const fixedCount = auditResult.issues.filter(i => i.canAutoFix).length;
+    const fixableIssues = auditResult.issues.filter(i => i.canAutoFix);
+    const fixedCount = fixableIssues.length;
+    const fixTypes = [...new Set(fixableIssues.map(i => i.ruleId))];
+    
+    // 追踪自动修复
+    analytics.trackAutoFix(fixedCount, fixTypes);
     
     toast({
       title: language === 'zh' ? '✓ 批量修复完成' : '✓ All Issues Fixed',

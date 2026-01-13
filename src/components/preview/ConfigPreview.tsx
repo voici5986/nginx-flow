@@ -6,6 +6,7 @@ import { generateDockerfile } from '@/utils/dockerfileGenerator';
 import { Button } from '@/components/ui/button';
 import { Copy, Check, ChevronUp, ChevronDown, Download, Container } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { analytics } from '@/utils/analytics';
 
 const ConfigPreview: React.FC = () => {
   const { config } = useConfig();
@@ -18,6 +19,10 @@ const ConfigPreview: React.FC = () => {
   const handleCopy = async () => {
     await navigator.clipboard.writeText(configText);
     setCopied(true);
+    
+    // 追踪配置复制
+    analytics.trackConfigCopy();
+    
     toast({
       title: language === 'zh' ? "已复制到剪贴板" : "Copied to clipboard",
       description: language === 'zh' ? "nginx.conf 已复制到剪贴板" : "nginx.conf copied to clipboard",
@@ -35,6 +40,10 @@ const ConfigPreview: React.FC = () => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    
+    // 追踪配置导出
+    analytics.trackConfigExport('nginx');
+    
     toast({
       title: language === 'zh' ? "下载成功" : "Download complete",
       description: language === 'zh' ? "nginx.conf 已下载" : "nginx.conf downloaded",
@@ -52,6 +61,10 @@ const ConfigPreview: React.FC = () => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    
+    // 追踪 Dockerfile 导出
+    analytics.trackConfigExport('dockerfile');
+    
     toast({
       title: t('preview.dockerfileDownloaded'),
       description: language === 'zh' ? "Dockerfile 已下载，请与 nginx.conf 放在同一目录" : "Dockerfile downloaded. Place it in the same directory as nginx.conf",
